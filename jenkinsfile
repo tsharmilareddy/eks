@@ -5,21 +5,19 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                docker build -t 537593809027.dkr.ecr.us-east-1.amazonaws.com/ecr-repository:$BUILD_NUMBER .
+                docker build -t 691029274359.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-1:$BUILD_NUMBER .
                  # login to ecr
-                aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 537593809027.dkr.ecr.us-east-1.amazonaws.com
+                aws ecr get-login-password --region ap-southeast-1 | sudo docker login --username AWS --password-stdin 691029274359.dkr.ecr.ap-southeast-1.amazonaws.com
                 #push the image to ecr
-                 docker push 537593809027.dkr.ecr.us-east-1.amazonaws.com/ecr-repository:$BUILD_NUMBER
+                 docker push 691029274359.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-1:$BUILD_NUMBER
                 '''
             }
         }
         stage('EKS Deploy') {
             steps {
                 sh '''
-                # apply kubectl
-                cd k8s/
-                // sed -i 's/TAG/$BUILD_NUMBER/g' deployment.yaml
-                // kubectl apply -f .
+                # helm
+                helm upgrade -i dev-static static -n dev
                 '''
 
             }
